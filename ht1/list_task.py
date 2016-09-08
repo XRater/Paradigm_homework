@@ -4,11 +4,9 @@
 # Example output: [1, 2, 3]
 def remove_adjacent(lst):
 	nlst = []
-	for i in range(len(lst)):
-		if (i == 0):
-			nlst.append(lst[i])
-		elif (lst[i] != lst[i - 1]):			
-			nlst.append(lst[i])
+	for i in iter(lst):              
+		if (lst(i) != nex):
+			nst.append(nexlst(i))
 	return nlst
  
 # Merge two sorted lists in one sorted list in linear time
@@ -33,5 +31,4 @@ def linear_merge(lst1, lst2):
 			nlst.append(lst2[j])
 			j+=1	
 	return nlst
-
                                    

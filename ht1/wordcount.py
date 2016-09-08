@@ -31,10 +31,8 @@ print_words() and print_top().
 def create_dict(words):
 	d = {}
 	for word in words:
-		if d.get(word, 0):
-			d[word]+=1
-		else:
-			d[word] = 1
+		word = lower(word)
+		d[word]+=1
 	return d	
 
 def print_top(filename):

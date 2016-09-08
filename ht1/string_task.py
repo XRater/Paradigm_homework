@@ -7,14 +7,13 @@
 #
 # Example input: 'read'
 # Example output: 'reading'
-def verbing(s):
-	s1 = s	
-	if (len(s) >= 3):
-		if (s[-3:] == 'ing'):
-			s1 = s + 'ly'
+def verbing(s):	
+	if len(s) >= 3:
+		if s[-3:] == 'ing':
+			s = s + 'ly'
 		else:
-			s1 = s + 'ing'
-	return s1
+			s = s + 'ing'
+	return s
  
  
 # Given a string, find the first appearance of the
@@ -28,8 +27,8 @@ def verbing(s):
 def not_bad(s):
 	i = s.find('not')
 	j = s.find('bad')
-	if ((i < j) and (i >= 0) and (j >= 0)):
-		s = s[:i] + 'good' + s[j + 3:]
+	if (i < j) and (i >= 0):
+		return s[:i] + 'good' + s[j + 3:]
 	return s
  
  
@@ -44,6 +43,7 @@ def not_bad(s):
 # Example input: 'abcd', 'xy'
 # Example output: 'abxcdy'
 def front_back(a, b):
-	s = a[0:len(a) - len(a)//2] + b[0:len(b) - len(b)//2] + a[len(a) - len(a)//2:] + b[len(b) - len(b)//2:]
-	return s
+	a_middle = len(a) - len(a)//2
+	b_middle = len(b) - len(b)//2
+	return a[:a_middle] + b[:b_middle] + a[a_middle:] + b[b_middle:]
                                                                                                           
