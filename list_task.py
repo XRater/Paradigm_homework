@@ -33,16 +33,3 @@ def linear_merge(lst1, lst2):
 			nlst.append(lst2[j])
 			j+=1	
 	return nlst
-
-
-n = int(input())
-lst1 = []
-for i in range(n):
-	lst1.append(int(input()))
-
-n = int(input())
-lst2 = []
-for i in range(n):
-	lst2.append(int(input()))
-
-print(linear_merge(lst1, lst2))
