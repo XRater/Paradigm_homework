@@ -1,0 +1,48 @@
+﻿# Remove equal adjacent elements
+#
+# Example input: [1, 2, 2, 3]
+# Example output: [1, 2, 3]
+def remove_adjacent(lst):
+	nlst = []
+	for i in range(len(lst)):
+		if (i == 0):
+			nlst.append(lst[i])
+		elif (lst[i] != lst[i - 1]):			
+			nlst.append(lst[i])
+	return nlst
+ 
+# Merge two sorted lists in one sorted list in linear time
+#
+# Example input: [2, 4, 6], [1, 3, 5]
+# Example output: [1, 2, 3, 4, 5, 6]
+def linear_merge(lst1, lst2):
+	nlst = []
+	i = 0
+	j = 0
+	while((i < len(lst1)) or (j < len(lst2))):
+		if (i == len(lst1)):
+			nlst.append(lst2[j])
+			j += 1
+		elif (j == len(lst2)):
+			nlst.append(lst1[i])
+			i += 1
+		elif (lst1[i] < lst2[j]):
+			nlst.append(lst1[i])
+			i += 1
+		else:
+			nlst.append(lst2[j])
+			j+=1	
+	return nlst
+
+
+n = int(input())
+lst1 = []
+for i in range(n):
+	lst1.append(int(input()))
+
+n = int(input())
+lst2 = []
+for i in range(n):
+	lst2.append(int(input()))
+
+print(linear_merge(lst1, lst2))
