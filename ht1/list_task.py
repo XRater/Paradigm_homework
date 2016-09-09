@@ -4,10 +4,10 @@
 # Example output: [1, 2, 3]
 def remove_adjacent(lst):
 	nlst = []
-	for i in range(len(lst)):
-		if (i == 0):
-			nlst.append(lst[i])
-		elif (lst[i] != lst[i - 1]):			
+	if lst:
+		nlst.append(lst[0])
+	for i in range(1, len(lst)):
+		if lst[i] != lst[i - 1]:			
 			nlst.append(lst[i])
 	return nlst
  
@@ -16,22 +16,12 @@ def remove_adjacent(lst):
 # Example input: [2, 4, 6], [1, 3, 5]
 # Example output: [1, 2, 3, 4, 5, 6]
 def linear_merge(lst1, lst2):
-	nlst = []
-	i = 0
-	j = 0
-	while((i < len(lst1)) or (j < len(lst2))):
-		if (i == len(lst1)):
-			nlst.append(lst2[j])
-			j += 1
-		elif (j == len(lst2)):
-			nlst.append(lst1[i])
-			i += 1
-		elif (lst1[i] < lst2[j]):
-			nlst.append(lst1[i])
-			i += 1
-		else:
-			nlst.append(lst2[j])
-			j+=1	
+	nlst = [] 
+	while lst1 and lst2:
+		if lst1[0] > lst2[0]:
+			nlst.append(lst2.pop(0))
+		else: 
+			nlst.append(lst1.pop(0))
+	nlst.extend(lst1)
+	nlst.extend(lst2)
 	return nlst
-
-                                   

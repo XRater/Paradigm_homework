@@ -31,33 +31,24 @@ print_words() and print_top().
 def create_dict(words):
 	d = {}
 	for word in words:
-		if d.get(word, 0):
-			d[word]+=1
-		else:
-			d[word] = 1
+		d[word] = d.get(word, 0) + 1
 	return d	
 
 def print_top(filename):
 	words_to_print = 20
 	words = read_words(filename)
 	d = create_dict(words)
-	words_number = 0
-	most_popular = []        
-	for word_count in d.items():
-		if (words_number < words_to_print):
-			most_popular.append(word_count)
-			words_number+=1    
-		else:                                
-			for i in range(20):
-				if (word_count[1] > most_popular[i][1]):
-					most_popular[i] = word_count
-	for i in range (words_number):
-		for j in range (words_number):
-			if (most_popular[i][1] > most_popular[j][1]):
-				most_popular[i], most_popular[j] = most_popular[j], most_popular[i]
-
-	for i in range(words_number):                       	
-		print(most_popular[i][0], ' ',most_popular[i][1]) 
+	lst = []
+	for key in d.keys():
+		lst.append((d[key], key))
+	lst.sort()
+	printed_words = 0
+	for item in reversed(lst):
+		print(item[1], ' ', item[0])
+		printed_words += 1
+		if printed_words == 20:
+			break
+	 
 		
 
 def print_words(filename):
