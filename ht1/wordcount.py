@@ -40,12 +40,12 @@ def print_top(filename):
 	words = read_words(filename)
 	d = create_dict(words)
 	lst = []
-	for key in d.keys():
-		lst.append((d[key], key))
+	for key, value in d.items():
+		lst.append((-value, key))
 	lst.sort()
 	printed_words = 0
-	for item in reversed(lst):
-		print(item[1], ' ', item[0])
+	for item in lst:
+		print(item[1], ' ', -item[0])
 		printed_words += 1
 		if printed_words == 20:
 			break
@@ -55,8 +55,14 @@ def print_top(filename):
 def print_words(filename):
 	words = read_words(filename)
 	d = create_dict(words)
-	for key in d.keys():
-		print(key, ' ', d[key])
+	lst = []
+	for key, value in d.items():
+		lst.append((-value, key))
+	lst.sort()
+	for item in lst:
+		print(item[1], ' ', -item[0])
+
+
 
 import sys
  
