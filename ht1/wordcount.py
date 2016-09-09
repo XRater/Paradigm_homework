@@ -42,14 +42,9 @@ def print_top(filename):
 	lst = []
 	for key, value in d.items():
 		lst.append((-value, key))
-	lst.sort()
-	printed_words = 0
-	for item in lst:
-		print(item[1], ' ', -item[0])
-		printed_words += 1
-		if printed_words == 20:
-			break
-	 
+	lst.sort()                        
+	for item in lst[:min(len(lst), 20)]:
+		print(item[1], ' ', -item[0]) 	 
 		
 
 def print_words(filename):
