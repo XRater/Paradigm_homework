@@ -35,15 +35,14 @@ def create_dict(words):
 		d[word] = d.get(word, 0) + 1
 	return d	
 
-def print_top(filename):
-	words_to_print = 20
+def print_top(filename):  
 	words = read_words(filename)
 	d = create_dict(words)
 	lst = []
 	for key, value in d.items():
 		lst.append((-value, key))
 	lst.sort()                        
-	for item in lst[:min(len(lst), 20)]:
+	for item in lst[:20]:
 		print(item[1], ' ', -item[0]) 	 
 		
 
@@ -52,10 +51,10 @@ def print_words(filename):
 	d = create_dict(words)
 	lst = []
 	for key, value in d.items():
-		lst.append((-value, key))
+		lst.append((key, value))
 	lst.sort()
 	for item in lst:
-		print(item[1], ' ', -item[0])
+		print(item[0], ' ', item[1])
 
 
 

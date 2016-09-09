@@ -16,8 +16,7 @@ def remove_adjacent(lst):
 # Example input: [2, 4, 6], [1, 3, 5]
 # Example output: [1, 2, 3, 4, 5, 6]
 def linear_merge(lst1, lst2):
-	nlst = []
-	print(type(lst1))              
+	nlst = []                      
 	while lst1 and lst2:
 		if lst1[len(lst1) - 1] > lst2[len(lst2) - 1]:
 			nlst.append(lst1.pop(len(lst1) - 1))
