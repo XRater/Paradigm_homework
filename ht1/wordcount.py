@@ -31,6 +31,7 @@ print_words() and print_top().
 def create_dict(words):
 	d = {}
 	for word in words:
+		word = word.lower()
 		d[word] = d.get(word, 0) + 1
 	return d	
 
@@ -79,7 +80,7 @@ def main():
     if len(sys.argv) != 3:
         print('usage: ./wordcount.py {--count | --topcount} file')
         sys.exit(1)
- 
+                       
     option = sys.argv[1]
     filename = sys.argv[2]
     if option == '--count':
