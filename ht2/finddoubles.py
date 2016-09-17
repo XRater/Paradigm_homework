@@ -23,7 +23,7 @@ def getfiles(root_folder):
 def print_simular(d):
 	for key, value in d.items():
 		if len(value) > 1: 
-			print(':'.join(value), )
+			print(':'.join(value))
 			
 
 def main(): 
