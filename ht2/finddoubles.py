@@ -1,15 +1,15 @@
 ﻿import sys, os
 from hashlib import md5
 
-def func(root_folder):
+def finddoubles(root_folder):
 	d = {}
 	for root, dirs, files in os.walk(root_folder):
-		for f in files:
-			if f[0] == '~' or f[0] == '.':
+		for curr_file in files:
+			if curr_file[0] == '~' or curr_file[0] == '.':
 				continue;
-			path = root + '\\' + f
-			with open(path, "br") as newf:
-				content = newf.read()
+			path = root + '\\' + curr_file
+			with open(path, "br") as f:
+				content = f.read()
 			m =  md5()
 			m.update(content)
 			key = m.hexdigest()
@@ -32,7 +32,7 @@ def main():
 		print('Wrong format')
 		sys.exit()
 	root_folder = sys.argv[1]
-	func(root_folder)
+	finddoubles(root_folder)
 	   	
 if __name__ == '__main__':
 	main()
