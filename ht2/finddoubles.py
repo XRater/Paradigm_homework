@@ -3,7 +3,7 @@ from hashlib import md5
 
 def getfiles(root_folder):
 	d = {}
-	for root, _, files in os.walk(root_folder):
+	for root, _, files in os.walk(os.path.abspath(root_folder)):
 		for curr_file in files:           
 			path = os.path.join(root, curr_file)
 			if curr_file[0] == '~' or curr_file[0] == '.' or os.path.islink(path):
