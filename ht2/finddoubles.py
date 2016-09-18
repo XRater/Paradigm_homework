@@ -11,13 +11,16 @@ def getfiles(root_folder):
 			key = get_hash(path)
 			d[key] = d.get(key, [])
 			d[key].append(path)
+	print(d)
 	return d
 
 def get_hash(path):
 	m =  md5()
 	with open(path, "br") as f:
-		for line in f:    
-			m.update(line)
+		inf = f.read(1024)
+		while inf:
+			m.update(inf)
+			inf = f.read()
 	return m.hexdigest()
 
 def print_simular(d):
