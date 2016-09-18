@@ -10,8 +10,7 @@ def getfiles(root_folder):
 				continue
 			key = get_hash(path)
 			d[key] = d.get(key, [])
-			d[key].append(path)
-	print(d)
+			d[key].append(path)                  
 	return d
 
 def get_hash(path):
