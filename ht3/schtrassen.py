@@ -1,30 +1,25 @@
 import numpy as np
 
-def get_matrix():
-	
-	n = int(input())
+def get_matrix(n):	
 	arr = []
 	for i in range (n):
 		arr.append(input().split())
 	mat_a = np.array(arr, dtype = int)
-	arr = []                              
-	for i in range (n):
-		arr.append(input().split())
-	mat_b =  np.array(arr, dtype = int)
+	return(mat_a)                         
+
+def resize_matrix(mat_a, n):
 	k = 1
 	while k < n:
-		k *=2 
-	mat_a = np.hstack( (mat_a,  np.zeros((n, k - n), dtype = int) ) )
-	mat_a = np.vstack( (mat_a,  np.zeros((k - n, k), dtype = int) ))
-	mat_b = np.hstack( (mat_b,  np.zeros((n, k - n), dtype = int)) )
-	mat_b = np.vstack( (mat_b,  np.zeros((k - n, k), dtype = int)) )
-	return(mat_a, mat_b, k, n)                         
+		k *= 2 
+	mat_a = np.hstack((mat_a,  np.zeros((n, k - n), dtype = int)))
+	mat_a = np.vstack((mat_a,  np.zeros((k - n, k), dtype = int)))  
+	return (mat_a, k)
 
-def mult_matrix(mat_a, mat_b, n):
+def mult_matrix(mat_a, mat_b, n):	
 	if n == 1:
 		return mat_a*mat_b
 	else:
-		n = n//2;
+		n = n // 2
 		a11 = mat_a[:n, :n]
 		a12 = mat_a[:n, n:]
 		a21 = mat_a[n:, :n]
@@ -47,20 +42,25 @@ def mult_matrix(mat_a, mat_b, n):
 		c12 = mat_3 + mat_5
 		c22 = mat_1 + mat_3 - mat_2 + mat_6
 
-		c_top = np.hstack((c11, c12))
-		c_bottom = np.hstack((c21, c22))
-		c = np.vstack((c_top, c_bottom))
+		c = np.zeros((2 * n, 2 * n), dtype = int) 
+		c[:n, :n] = c11
+		c[:n, n:] = c12
+		c[n:, :n] = c21
+		c[n:, n:] = c22
 		return c
 
 def print_matrix(matrix, size):
 
-	print()	
 	for row in matrix[:size, :size]:
 		print(' '.join(map(str, row)))     
 
 def main(): 
-	mat_a, mat_b, n, real_size = get_matrix()
-	mat_c = mult_matrix(mat_a, mat_b, n)	
+	real_size = int(input())
+	mat_a = get_matrix(real_size)
+	mat_b = get_matrix(real_size)
+	mat_a, size = resize_matrix(mat_a, real_size)
+	mat_b, size = resize_matrix(mat_b, real_size)
+	mat_c = mult_matrix(mat_a, mat_b, size)	
 	print_matrix(mat_c, real_size)
 	
 
