@@ -1,21 +1,19 @@
 import numpy as np
 
-def get_matrix(n):	
-	arr = []
+def get_matrix(n):
+	mat = np.array([], dtype = int)
 	for i in range (n):
-		arr.append(input().split())
-	mat_a = np.matrix(arr, dtype = int)	  
-	return mat_a                         
+		mat = np.append(mat, list(map(int, input().split())))
+	return np.reshape(mat, (n, n))                         
 
 def resize_matrix(mat_a, size):
 	n = mat_a.shape[0]
 	if (size > n):
-		mat_a = np.hstack((mat_a,  np.zeros((n, szie - n), dtype = mat_a.dtype)))
+		mat_a = np.hstack((mat_a,  np.zeros((n, size - n), dtype = mat_a.dtype)))
 		mat_a = np.vstack((mat_a,  np.zeros((size - n, size), dtype = mat_a.dtype)))  
-		return mat_a
+		return mat_a 
 	else: 
-		mat_a = mat_a[:size, :size]
-		return mat_a
+		return mat_a[:size, :size]
 
 def mult_matrix(mat_a, mat_b):	
 	if mat_a.shape[0] == 1:
