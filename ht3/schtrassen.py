@@ -5,19 +5,27 @@ import sys
 #a = np.vstack((a, b))
 #print(a)
 
-def get_matrix(input_file):
-	matrix_both = np.loadtxt(input_file, dtype = int)
-	n = matrix_both.shape[1]
+def get_matrix():
+	
+	n = int(input())
+	arr = []
+	for i in range (n):
+		arr.append(input().split())
+	mat_a = np.array(arr, dtype = int)
+	arr = []                              
+	for i in range (n):
+		arr.append(input().split())
+	mat_b =  np.array(arr, dtype = int)
 	k = 1
 	while k < n:
 		k *=2 
-	mat_a =  matrix_both[:n]
 	mat_a = np.hstack( (mat_a,  np.zeros((n, k - n), dtype = int) ) )
 	mat_a = np.vstack( (mat_a,  np.zeros((k - n, k), dtype = int) ))
-	mat_b = matrix_both[n:]
 	mat_b = np.hstack( (mat_b,  np.zeros((n, k - n), dtype = int)) )
-	mat_b = np.vstack( (mat_b,  np.zeros((k - n, k), dtype = int)) )   
-	return(mat_a, mat_b, k, n)
+	mat_b = np.vstack( (mat_b,  np.zeros((k - n, k), dtype = int)) )
+	print(mat_a)
+	print(mat_b)   
+	return(mat_a, mat_b, k, n)                         
 
 def mult_matrix(mat_a, mat_b, n):
 	if n == 1:
@@ -54,14 +62,10 @@ def mult_matrix(mat_a, mat_b, n):
 def print_matrix(matrix, size):
 	
 	for row in matrix[:size, :size]:
-		print(' '.join(map(str, row)))
+		print(' '.join(map(str, row)))     
 
 def main(): 
-	if len(sys.argv) != 2:
-		print('Wrong format')
-		sys.exit()
-	input_file = sys.argv[1]
-	mat_a, mat_b, n, real_size = get_matrix(input_file)
+	mat_a, mat_b, n, real_size = get_matrix()
 	mat_c = mult_matrix(mat_a, mat_b, n)	
 	print_matrix(mat_c, real_size)
 	
