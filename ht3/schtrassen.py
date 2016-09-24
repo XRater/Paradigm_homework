@@ -1,9 +1,4 @@
 import numpy as np
-import sys              
-#a = np.array([2, 3, 4, 5])
-#b = np.array([3, 4, 5, 6])
-#a = np.vstack((a, b))
-#print(a)
 
 def get_matrix():
 	
@@ -23,8 +18,6 @@ def get_matrix():
 	mat_a = np.vstack( (mat_a,  np.zeros((k - n, k), dtype = int) ))
 	mat_b = np.hstack( (mat_b,  np.zeros((n, k - n), dtype = int)) )
 	mat_b = np.vstack( (mat_b,  np.zeros((k - n, k), dtype = int)) )
-	print(mat_a)
-	print(mat_b)   
 	return(mat_a, mat_b, k, n)                         
 
 def mult_matrix(mat_a, mat_b, n):
@@ -60,7 +53,8 @@ def mult_matrix(mat_a, mat_b, n):
 		return c
 
 def print_matrix(matrix, size):
-	
+
+	print()	
 	for row in matrix[:size, :size]:
 		print(' '.join(map(str, row)))     
 
