@@ -1,38 +1,4 @@
-import sys
-
-def _add(a, b):
-	return a.value + b.value
-def _sub(a, b):
-	return a.value - b.value
-def _mu(a, b):
-	return a.value*b.value
-def _floordiv(a , b):
-	return a.value // b.value
-def _mod(a, b):
-	return a.value % b.value
-def _eq(a, b):
-	return int(a.value == b.value)
-def _ne(a, b):
-	return int(a.value != b.value)
-def _lt(a ,b):
-	return int(a.value < b.value)
-def _gt(a, b):
-	return int(a.value > b.value)
-def _le(a, b):
-	return int(a.value <= b.value)
-def _ge(a, b):
-	return int(a.value >= b.value)
-def _and(a, b):
-	return int(bool(a.value)*bool(b.value))
-def _or(a, b):
-	return int(bool(a.value) + bool(b.value))
-def _neg(a):
-	return -a.value
-def _not(a):
-		return int(not(a.value))
-
-_operation_dictionary = {'+': _add, '-': _sub, '*': _mu, '/': _floordiv, '%': _mod, '==': _eq, '!=': _ne, '<': _lt, 
-						'>': _gt, '<=': _le, '>=': _ge, '&&': _and, '||': _or, 'u-': _neg, 'u!': _not}
+import sys                                        
 	
 class Scope(object):
 	def __init__(self, parent = None):
@@ -60,18 +26,26 @@ class BinaryOperation:
 		self.ihs = ihs
 		self.rhs = rhs
 		self.op = op
+		self.operation_dictionary = {'+': lambda x, y: x.value + y.value, '-': lambda x, y: x.value - y.value,
+									 '*': lambda x, y: x.value * y.value, '/': lambda x, y: x.value // y.value,
+									 '%': lambda x, y: x.value % y.value, '==': lambda x, y: int(x.value == y.value),
+									 '!=': lambda x, y: int(x.value != y.value), '>': lambda x, y: int(x.value > y.value),
+									 '<': lambda x, y: int(x.value < y.value), '>=': lambda x, y: int(x.value >= y.value),
+									 '<=': lambda x, y: int(x.value <= y.value), '&&': lambda x, y: int(bool(x.value) * bool(y.value)),
+									 '||': lambda x, y: int(bool(x.value) + bool(y.value))}
 	def evaluate(self, scope):
 		left_part = self.ihs.evaluate(scope)
 		right_part = self.rhs.evaluate(scope)  
-		return Number(_operation_dictionary[self.op](left_part, right_part))
+		return Number(self.operation_dictionary[self.op](left_part, right_part))
 
 class UnaryOperation:
 	def __init__(self, op, expr):
 		self.expr = expr
 		self.op = op
+		self.operation_dictionary = {'-': lambda x: -x.value, '!': lambda x: int(not(bool(x.value)))}
 	def evaluate(self, scope):
 		expr_result = self.expr.evaluate(scope) 
-		return Number(_operation_dictionary['u' + self.op](expr_result))
+		return Number(self.operation_dictionary[self.op](expr_result))
 
 class Function:
 	def __init__(self, args, body):
@@ -200,10 +174,10 @@ def Test5():
 	scope = Scope()
 	ra = Read('a')
 	rb = Read('b')
-	Cmp_ab = BinaryOperation(Reference('a'), '<', Reference('b'))
+	Cmp_ab = BinaryOperation(Reference('a'), '<=', Reference('b'))
 	evl_bma = BinaryOperation(Reference('b'), '-', Reference('a'))
 	Eq_a0 = BinaryOperation(Reference('a'), '==', Number(0))
-	ca = Conditional(Eq_a0, [Print(Reference('a'))], [FunctionCall(Reference('GCD'), [evl_bma, Reference('a')])])
+	ca = Conditional(Eq_a0, [Print(Reference('b'))], [FunctionCall(Reference('GCD'), [evl_bma, Reference('a')])])
 	c = Conditional(Cmp_ab,[ca],[FunctionCall(Reference('swap_gcd'), [Reference('a'), Reference('b')])])
 	swap_gcd = Function(['a', 'b'], [FunctionCall(Reference('GCD'),[Reference('b'), Reference('a')])])
 	GCD = Function(['a', 'b'], [c])
