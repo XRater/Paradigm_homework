@@ -182,15 +182,15 @@ def Test1():            # a + b
 	p1.evaluate(scope)
 
 def Test2():
-	print('a^2 - b^2 calculation')
-	scope = Scope()     #a^2 - b^2 (with function)
+	print('a^2 - (-b)^2 calculation')
+	scope = Scope()     #a^2 - (-b)^2 (with function)
 	r1 = Read('a')
 	r2 = Read('b')
 
 	rf1 = Reference('p')
 	rf2 = Reference('q')
 	b1 = BinaryOperation(rf1, '*', rf1)
-	b2 = BinaryOperation(rf2, '*', rf2)
+	b2 = BinaryOperation(UnaryOperation('-', rf2), '*', UnaryOperation('-', rf2))
 	b3 = BinaryOperation(b1, '-', b2)
 	f1 = Function(['p', 'q'], [b1, b2, b3])
 	fd = FunctionDefinition('square_sub', f1)
@@ -217,7 +217,7 @@ def Test4():
 	FunctionDefinition('--', minus_minus).evaluate(scope)
 
 
-	c = Conditional(BinaryOperation(Reference('n'), '>=', Number(0)), [FunctionCall(f, Reference('--'))])
+	c = Conditional(BinaryOperation(Reference('n'), '>=', Number(0)), [FunctionCall(f, Reference('--'))]) 
 	f = Function(['n'], [Print(Reference('n')), c]) 
 	fc = FunctionCall(f, [r1])
 	fc.evaluate(scope)
