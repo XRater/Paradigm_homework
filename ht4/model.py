@@ -171,19 +171,20 @@ def Test4():
 	main_function.evaluate(scope)
 
 def Test5():
+	print('Greatest common division')
 	scope = Scope()
 	ra = Read('a')
 	rb = Read('b')
 	Cmp_ab = BinaryOperation(Reference('a'), '<=', Reference('b'))
 	evl_bma = BinaryOperation(Reference('b'), '-', Reference('a'))
 	Eq_a0 = BinaryOperation(Reference('a'), '==', Number(0))
-	ca = Conditional(Eq_a0, [Print(Reference('b'))], [FunctionCall(Reference('GCD'), [evl_bma, Reference('a')])])
+	ca = Conditional(Eq_a0, [Print(Reference('b'))], [FunctionCall(Reference('GCD'), [Reference('a'), evl_bma])])
 	c = Conditional(Cmp_ab,[ca],[FunctionCall(Reference('swap_gcd'), [Reference('a'), Reference('b')])])
 	swap_gcd = Function(['a', 'b'], [FunctionCall(Reference('GCD'),[Reference('b'), Reference('a')])])
 	GCD = Function(['a', 'b'], [c])
 	GCD_def = FunctionDefinition('GCD', GCD)
 	swap_gcd_def = FunctionDefinition('swap_gcd', swap_gcd)
-	main_function = Function([], [ra, rb, GCD_def, FunctionCall(Reference('GCD'), [Reference('a'), Reference('b')])])
+	main_function = Function([], [ra, rb, GCD_def, swap_gcd_def, FunctionCall(Reference('GCD'), [Reference('a'), Reference('b')])])
 	main_function.evaluate(scope)
 
 def _model_main_tests():         #May I call it like this? 
