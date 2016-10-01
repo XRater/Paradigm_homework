@@ -104,6 +104,7 @@ class Function:
 		self.args = args
 		self.body = body
 	def evaluate(self, scope):
+		result = Number(0)
 		for expr in self.body:
 			result = expr.evaluate(scope)
 		return result
@@ -126,7 +127,7 @@ class Conditional:
 		self.if_false = if_false
 	def evaluate(self, scope):
 		condition = self.condition.evaluate(scope)
-		result = 0;
+		result = Number(0);
 		if condition and self.if_true:
 			for expr in self.if_true:
 				result = expr.evaluate(scope)
@@ -211,13 +212,24 @@ def Test3():
 	main_function.evaluate(scope)
 
 def Test4():
-	scope = Scope()                                                                           #Recurtion Test (All integers from n to 0)
+	print('All integers from n to 1')
+	scope = Scope()                                                                           #Recurtion Test (All integers from n to 1)
 	r1 = Read('n')
 	minus_minus = Function('n', [BinaryOperation(Reference('n'), '-', Number(1))])
-	c = Conditional(BinaryOperation(Reference('n'), '>', Number(0)), [ FunctionCall(Reference('f'), [FunctionCall(Reference('--'), [Reference('n')])] ) ]) 
+	c = Conditional(BinaryOperation(Reference('n'), '>', Number(1)), [ FunctionCall(Reference('f'), [FunctionCall(Reference('--'), [Reference('n')])] ) ]) 
 	f = Function(['n'], [Print(Reference('n')), c]) 
 	main_function = Function([], [FunctionDefinition('--', minus_minus), FunctionDefinition('f', f), r1, FunctionCall(Reference('f'), [Reference('n')])])
 	main_function.evaluate(scope)
+
+def Test5():
+	scope = Scope()
+	r1 = Read('n')
+	Cmp_ab = BinaryOperation(Reference('a'), '<', Reference('b'))
+	Eq_a0 = BinaryOperation(Reference('a'), '==', Number(0))
+	c = Conditional(Cmp,[],[])
+	GCD = Function(['a', 'b'], [c])
+	GCD_def = FunctionDefenitiion('GCD', GCD)
+	main_function = Function([], [r1, GCD])
 
 def _model_main_tests():         #May I call it like this? 
 	if len(sys.argv) != 2:
