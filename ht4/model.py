@@ -1,5 +1,39 @@
 import sys
 
+def _add(a, b):
+	return a.value + b.value
+def _sub(a, b):
+	return a.value - b.value
+def _mu(a, b):
+	return a.value*b.value
+def _floordiv(a , b):
+	return a.value // b.value
+def _mod(a, b):
+	return a.value % b.value
+def _eq(a, b):
+	return int(a.value == b.value)
+def _ne(a, b):
+	return int(a.value != b.value)
+def _lt(a ,b):
+	return int(a.value < b.value)
+def _gt(a, b):
+	return int(a.value > b.value)
+def _le(a, b):
+	return int(a.value <= b.value)
+def _ge(a, b):
+	return int(a.value >= b.value)
+def _and(a, b):
+	return int(bool(a.value)*bool(b.value))
+def _or(a, b):
+	return int(bool(a.value) + bool(b.value))
+def _neg(a):
+	return -a.value
+def _not(a):
+		return int(not(a.value))
+
+_operation_dictionary = {'+': _add, '-': _sub, '*': _mu, '/': _floordiv, '%': _mod, '==': _eq, '!=': _ne, '<': _lt, 
+						'>': _gt, '<=': _le, '>=': _ge, '&&': _and, '||': _or, 'u-': _neg, 'u!': _not}
+	
 class Scope(object):
 	def __init__(self, parent = None):
 		self.variables = {}
@@ -17,41 +51,9 @@ class Number:
 	def __init__(self, value):
 		self.value = value	
 	def evaluate(self, scope):
-		return self;
+		return self
 	def __bool__(self):
 		return bool(self.value)
-	def __add__(self, other):
-		return Number(self.value + other.value)
-	def __sub__(self, other):
-		return Number(self.value - other.value)
-	def __mul__(self, other):
-		return Number(self.value * other.value)
-	def __floordiv__(self, other):
-		return Number(self.value // other.value)
-	def __mod__(self, other):
-		return Number(self.value % other.value)
-	def __eq__(self, other):
-		return Number(int(self.value == other.value))
-	def __ne__(self, other):
-		return Number(int(self.value != other.value))
-	def __lt__(self, other):
-		return Number(int(self.value < other.value))
-	def __gt__(self, other):
-		return Number(int(self.value > other.value))
-	def __le__(self, other):
-		return Number(int(self.value <= other.value))
-	def __ge__(self, other):
-		return Number(int(self.value >= other.value))
-	def __and__(self, other):
-		return Number(int(bool(self.value)*bool(other.value)))
-	def __or__(self, other):
-		return Number(int(bool(self.value) + bool(other.value)))
-	def __neg__(self):
-		return Number(-self.value)
-	def __or__(self, other):
-		return Number(int(bool(self.value) + bool(other.value)))
-	def logical_not(self):
-		return Number(int(not(self.value)))
 
 class BinaryOperation:
 	def __init__(self, ihs, op, rhs):
@@ -60,44 +62,16 @@ class BinaryOperation:
 		self.op = op
 	def evaluate(self, scope):
 		left_part = self.ihs.evaluate(scope)
-		right_part = self.rhs.evaluate(scope)
-		if self.op == '+':
-			return left_part + right_part
-		if self.op == '-':
-			return left_part - right_part
-		if self.op == '*':
-			return left_part * right_part
-		if self.op == '/':
-			return left_part // right_part
-		if self.op == '%':
-			return left_part % right_part
-		if self.op == '==':
-			return left_part == right_part
-		if self.op == '!=':
-			return left_part != right_part
-		if self.op == '<':
-			return left_part < right_part
-		if self.op == '>':
-			return left_part > right_part
-		if self.op == '<=':
-			return left_part <= right_part
-		if self.op == '>=':
-			return left_part >= right_part
-		if self.op == '&&':
-			return left_part & right_part
-		if self.op == '||':
-			return left_part | right_part
+		right_part = self.rhs.evaluate(scope)  
+		return Number(_operation_dictionary[self.op](left_part, right_part))
 
 class UnaryOperation:
 	def __init__(self, op, expr):
 		self.expr = expr
 		self.op = op
 	def evaluate(self, scope):
-		expr_result = self.expr.evaluate(scope)
-		if self.op == '-':
-			return -expr_result
-		if self.op == '!':
-			return expr_result.logical_not()
+		expr_result = self.expr.evaluate(scope) 
+		return Number(_operation_dictionary['u' + self.op](expr_result))
 
 class Function:
 	def __init__(self, args, body):
@@ -127,13 +101,14 @@ class Conditional:
 		self.if_false = if_false
 	def evaluate(self, scope):
 		condition = self.condition.evaluate(scope)
-		result = Number(0);
+		result = Number(0)
+		body = []
 		if condition and self.if_true:
-			for expr in self.if_true:
-				result = expr.evaluate(scope)
+			body = self.if_true
 		elif self.if_false:
-			for expr in self.if_false:
-				result = expr.evaluate(scope)
+			body = self.if_false
+		for expr in body:
+			result = expr.evaluate(scope)
 		return result
 
 class Reference:
@@ -223,20 +198,26 @@ def Test4():
 
 def Test5():
 	scope = Scope()
-	r1 = Read('n')
+	ra = Read('a')
+	rb = Read('b')
 	Cmp_ab = BinaryOperation(Reference('a'), '<', Reference('b'))
+	evl_bma = BinaryOperation(Reference('b'), '-', Reference('a'))
 	Eq_a0 = BinaryOperation(Reference('a'), '==', Number(0))
-	c = Conditional(Cmp,[],[])
+	ca = Conditional(Eq_a0, [Print(Reference('a'))], [FunctionCall(Reference('GCD'), [evl_bma, Reference('a')])])
+	c = Conditional(Cmp_ab,[ca],[FunctionCall(Reference('swap_gcd'), [Reference('a'), Reference('b')])])
+	swap_gcd = Function(['a', 'b'], [FunctionCall(Reference('GCD'),[Reference('b'), Reference('a')])])
 	GCD = Function(['a', 'b'], [c])
-	GCD_def = FunctionDefenitiion('GCD', GCD)
-	main_function = Function([], [r1, GCD])
+	GCD_def = FunctionDefinition('GCD', GCD)
+	swap_gcd_def = FunctionDefinition('swap_gcd', swap_gcd)
+	main_function = Function([], [ra, rb, GCD_def, FunctionCall(Reference('GCD'), [Reference('a'), Reference('b')])])
+	main_function.evaluate(scope)
 
 def _model_main_tests():         #May I call it like this? 
 	if len(sys.argv) != 2:
 		print('Enter number of the test')
 		sys.exit()
 	test_number = int(sys.argv[1])
-	d = [Test0, Test1, Test2, Test3, Test4];
+	d = [Test0, Test1, Test2, Test3, Test4, Test5];
 	d[test_number]()
 
 		   	
