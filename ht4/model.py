@@ -120,17 +120,17 @@ class FunctionCall:
 		return function.evaluate(call_scope)
 
 class Conditional:
-	def __init__(self, condition, if_true, if_false = None):
+	def __init__(self, condition, if_true = None, if_false = None):
 		self.condition = condition
 		self.if_true = if_true
 		self.if_false = if_false
 	def evaluate(self, scope):
 		condition = self.condition.evaluate(scope)
 		result = 0;
-		if (condition):
+		if condition and self.if_true:
 			for expr in self.if_true:
 				result = expr.evaluate(scope)
-		else:
+		elif self.if_false:
 			for expr in self.if_false:
 				result = expr.evaluate(scope)
 		return result
@@ -211,23 +211,20 @@ def Test3():
 	main_function.evaluate(scope)
 
 def Test4():
-	scope = Scope()                                                                           #Recurtion Test (But I cant realize it, cause I have to declarate variables successively)
+	scope = Scope()                                                                           #Recurtion Test (All integers from n to 0)
 	r1 = Read('n')
-	minus_minus = Function('n', BinaryOperation(Reference('n'), '-', Number(1)))
-	FunctionDefinition('--', minus_minus).evaluate(scope)
-
-
-	c = Conditional(BinaryOperation(Reference('n'), '>=', Number(0)), [FunctionCall(f, Reference('--'))]) 
+	minus_minus = Function('n', [BinaryOperation(Reference('n'), '-', Number(1))])
+	c = Conditional(BinaryOperation(Reference('n'), '>', Number(0)), [ FunctionCall(Reference('f'), [FunctionCall(Reference('--'), [Reference('n')])] ) ]) 
 	f = Function(['n'], [Print(Reference('n')), c]) 
-	fc = FunctionCall(f, [r1])
-	fc.evaluate(scope)
+	main_function = Function([], [FunctionDefinition('--', minus_minus), FunctionDefinition('f', f), r1, FunctionCall(Reference('f'), [Reference('n')])])
+	main_function.evaluate(scope)
 
 def _model_main_tests():         #May I call it like this? 
 	if len(sys.argv) != 2:
 		print('Enter number of the test')
 		sys.exit()
 	test_number = int(sys.argv[1])
-	d = [Test0, Test1, Test2, Test3];
+	d = [Test0, Test1, Test2, Test3, Test4];
 	d[test_number]()
 
 		   	
