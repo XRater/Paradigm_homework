@@ -1,5 +1,5 @@
 from yat.model import *
-#from model import *
+#from printer import *
 
 class ConstantFolder:             
 
@@ -16,7 +16,7 @@ class ConstantFolder:
 			if (right_part.value == 0) and (left_part.Type == 'Number' or left_part.Type == 'Reference') and (binary.op == '*'):
 				return Number(0)
 			if (left_part.Type == 'Number'):
-				return(binary.evaluate(None))
+				return(BinaryOperation(left_part, binary.op, right_part).evaluate(None))
 		if left_part.Type == 'Number':
 			if (left_part.value == 0) and (right_part.Type == 'Number' or right_part.Type == 'Reference') and (binary.op == '*'):
 				return Number(0)
@@ -25,10 +25,10 @@ class ConstantFolder:
 				return Number(0)
 		return BinaryOperation(left_part, binary.op, right_part);
 	
-	def UnaryOperation(self, unary):
+	def visitUnaryOperation(self, unary):
 		un_expr = unary.expr.visit(self)
 		if un_expr.Type == 'Number':
-			return(unary.evaluate(None))
+			return(UnaryOperation(unary.op, un_expr).evaluate(None))
 		return UnaryOperation(unary.op, un_expr);
 
 	def visitConditional(self, cond):
@@ -67,4 +67,18 @@ class ConstantFolder:
 	def visitReference(self, ref):
 		return ref      
 
+ '''
+if __name__ == '__main__':
+#	_model_main_tests()
+	n1 = Number(0)
+	n2 = Number(2)
+	r1 = Read('a')
+	r2 = Read('b')
+	b1 = BinaryOperation(n1 , '-', n2)
+	b2 = BinaryOperation(b1, '+', r2)
+	u1 = UnaryOperation('-', n2)
+	folder = ConstantFolder()
+	newb = folder.visit(u1)
+	printer = PrettyPrinter()
+	printer.visit(newb)            '''
 

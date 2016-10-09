@@ -1,4 +1,4 @@
-from yat.model import *
+#from yat.model import *
 
 class PrettyPrinter():
 	def __init__(self):
