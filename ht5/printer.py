@@ -47,9 +47,7 @@ class PrettyPrinter():
 
 	def visitFunctionDefinition(self, definition):
 		print('def ' + definition.name + '(' + ', '.join(definition.function.args) + '){')
-		self.tab += 1
 		self.print_body(definition.function.body)
-		self.tab -= 1
 		self.print_tab()
 		print('}', end='')
 
