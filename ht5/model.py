@@ -1,86 +1,106 @@
 import sys
-#from printer import *
-#from folder import *                                       
-	
+# from printer import *
+# from folder import *
+
+
 class Scope(object):
-	def __init__(self, parent = None):
+	def __init__(self, parent=None):
 		self.variables = {}
 		self.parent = parent
+
 	def __setitem__(self, key, value):
-		self.variables[key] = value;
+		self.variables[key] = value
+
 	def __getitem__(self, key):
 		if self.parent:
 			return self.variables.get(key, self.parent[key])
 		else:
 			return self.variables.get(key, None)
-			
+
 
 class Number:
 	def __init__(self, value):
 		self.value = value
+
 	def evaluate(self, scope):
 		return self
+
 	def visit(self, visitor):
 		return visitor.visitNumber(self)
 
+
 class BinaryOperation:
+	operation_dictionary = {'+': lambda x, y: x.value + y.value, '-': lambda x, y: x.value - y.value,
+							'*': lambda x, y: x.value * y.value, '/': lambda x, y: x.value // y.value,
+							'%': lambda x, y: x.value % y.value, '==': lambda x, y: int(x.value == y.value),
+							'!=': lambda x, y: int(x.value != y.value), '>': lambda x, y: int(x.value > y.value),
+							'<': lambda x, y: int(x.value < y.value), '>=': lambda x, y: int(x.value >= y.value),
+							'<=': lambda x, y: int(x.value <= y.value), '&&': lambda x, y: int(bool(x.value) * bool(y.value)),
+							'||': lambda x, y: int(bool(x.value) + bool(y.value))}
+
 	def __init__(self, ihs, op, rhs):
 		self.ihs = ihs
 		self.rhs = rhs
 		self.op = op
-		self.operation_dictionary = {'+': lambda x, y: x.value + y.value, '-': lambda x, y: x.value - y.value,
-									 '*': lambda x, y: x.value * y.value, '/': lambda x, y: x.value // y.value,
-									 '%': lambda x, y: x.value % y.value, '==': lambda x, y: int(x.value == y.value),
-									 '!=': lambda x, y: int(x.value != y.value), '>': lambda x, y: int(x.value > y.value),
-									 '<': lambda x, y: int(x.value < y.value), '>=': lambda x, y: int(x.value >= y.value),
-									 '<=': lambda x, y: int(x.value <= y.value), '&&': lambda x, y: int(bool(x.value) * bool(y.value)),
-									 '||': lambda x, y: int(bool(x.value) + bool(y.value))}
+
 	def evaluate(self, scope):
 		left_part = self.ihs.evaluate(scope)
-		right_part = self.rhs.evaluate(scope)  
+		right_part = self.rhs.evaluate(scope)
 		return Number(self.operation_dictionary[self.op](left_part, right_part))
+
 	def visit(self, visitor):
 		return visitor.visitBinaryOperation(self)
 
+
 class UnaryOperation:
+	operation_dictionary = {'-': lambda x: -x.value, '!': lambda x: int(not(bool(x.value)))}
+
 	def __init__(self, op, expr):
 		self.expr = expr
 		self.op = op
-		self.operation_dictionary = {'-': lambda x: -x.value, '!': lambda x: int(not(bool(x.value)))}
+
 	def evaluate(self, scope):
-		expr_result = self.expr.evaluate(scope) 
+		expr_result = self.expr.evaluate(scope)
 		return Number(self.operation_dictionary[self.op](expr_result))
+
 	def visit(self, visitor):
 		return visitor.visitUnaryOperation(self)
+
 
 class Function:
 	def __init__(self, args, body):
 		self.args = args
 		self.body = body
+
 	def evaluate(self, scope):
 		result = Number(0)
 		for expr in self.body:
 			result = expr.evaluate(scope)
 		return result
 
+
 class FunctionCall:
 	def __init__(self, fun_expr, args):
 		self.args = args
 		self.fun_expr = fun_expr
+
 	def evaluate(self, scope):
 		function = self.fun_expr.evaluate(scope)
 		call_scope = Scope(scope)
 		for arg, name in zip(self.args, function.args):
 			call_scope[name] = arg.evaluate(scope)
 		return function.evaluate(call_scope)
+
 	def visit(self, visitor):
 		return visitor.visitFunctionCall(self)
 
+
 class Conditional:
-	def __init__(self, condition, if_true = None, if_false = None):
+	def __init__(self, condition, if_true=None, if_false=None):
 		self.condition = condition
 		self.if_true = if_true
 		self.if_false = if_false
+
 	def evaluate(self, scope):
 		condition = self.condition.evaluate(scope)
 		result = Number(0)
@@ -92,47 +112,61 @@ class Conditional:
 		for expr in body:
 			result = expr.evaluate(scope)
 		return result
+
 	def visit(self, visitor):
-		return visitor.visitConditional(self)	
+		return visitor.visitConditional(self)
+
 
 class Reference:
 	def __init__(self, name):
 		self.name = name
+
 	def evaluate(self, scope):
-		return scope[self.name]	
+		return scope[self.name]
+
 	def visit(self, visitor):
 		return visitor.visitReference(self)
+
 
 class FunctionDefinition:
 	def __init__(self, name, function):
 		self.name = name
 		self.function = function
+
 	def evaluate(self, scope):
 		scope[self.name] = self.function
-		return self.function 
+		return self.function
+
 	def visit(self, visitor):
 		return visitor.visitFunctionDefinition(self)
+
 
 class Read:
 	def __init__(self, name):
 		self.name = name
+
 	def evaluate(self, scope):
 		value = Number(int(input()))
 		scope[self.name] = value
 		return value
+
 	def visit(self, visitor):
 		return visitor.visitRead(self)
-		
+
+
 class Print:
 	def __init__(self, expr):
 		self.expr = expr
+
 	def evaluate(self, scope):
 		result = self.expr.evaluate(scope)
 		print(result.value)
 		return result
+
 	def visit(self, visitor):
 		return visitor.visitPrint(self)
-				
+
+
 def Test0(mode):            #Simple print
 	print('Simple print')
 	scope = Scope()
@@ -143,6 +177,7 @@ def Test0(mode):            #Simple print
 	if (mode == 'p'):
 		printer = PrettyPrinter()
 		printer.visit(p1)
+
 
 def Test1(mode):            # a + b
 	print('a + b calculation')
@@ -157,12 +192,12 @@ def Test1(mode):            # a + b
 		printer = PrettyPrinter()
 		printer.visit(p1)
 
+
 def Test2(mode):
 	print('a^2 - (-b)^2 calculation')
 	scope = Scope()     #a^2 - (-b)^2 (with function)
 	r1 = Read('a')
 	r2 = Read('b')
-
 	rf1 = Reference('p')
 	rf2 = Reference('q')
 	b1 = BinaryOperation(rf1, '*', rf1)
@@ -171,7 +206,6 @@ def Test2(mode):
 	f1 = Function(['p', 'q'], [b1, b2, b3])
 	fd = FunctionDefinition('square_sub', f1)
 	fd.evaluate(scope)
-
 	fc = FunctionCall(Reference('square_sub'), [r1, r2])
 	p = Print(fc)
 	if mode == 'e':
@@ -179,6 +213,7 @@ def Test2(mode):
 	if mode == 'p':
 		printer = PrettyPrinter()
 		printer.visit(p)
+
 
 def Test3(mode):
 	print('Maximum of two integers')
@@ -188,6 +223,7 @@ def Test3(mode):
 	c1 = Conditional(BinaryOperation(Reference('a'), '>=', Reference('b')), [Print(Reference('a'))], [Print(Reference('b'))])
 	main_function = Function([],[r1, r2, c1])
 	main_function.evaluate(scope)
+
 
 def Test4(mode):
 	print('All integers from n to 1')
@@ -248,7 +284,6 @@ def Test5(mode):
 		printer.visit(nswap)
 		printer.visit(ncall)
 		
-		
 
 def _model_main_tests():         #May I call it like this? 
 	if len(sys.argv) != 3:
@@ -259,7 +294,7 @@ def _model_main_tests():         #May I call it like this?
 	d = [Test0, Test1, Test2, Test3, Test4, Test5];
 	d[test_number](test_mode)
 
-		   	
+
 if __name__ == '__main__':
 	_model_main_tests()
 #	n1 = Number(0)
