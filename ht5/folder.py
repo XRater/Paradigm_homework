@@ -1,4 +1,4 @@
-import yat.model
+from yat.model import *
 #from model import *
 
 class ConstantFolder:             
@@ -65,4 +65,6 @@ class ConstantFolder:
 		return read
 
 	def visitReference(self, ref):
-		return ref
+		return ref      
+
+

@@ -1,3 +1,5 @@
+from yat.model import *
+
 class PrettyPrinter():
 	def __init__(self):
 		self.tab = 0;	

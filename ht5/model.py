@@ -1,6 +1,6 @@
 import sys
 #from printer import PrettyPrinter
-#rom folder import *                                       
+#from folder import *                                       
 	
 class Scope(object):
 	def __init__(self, parent = None):
