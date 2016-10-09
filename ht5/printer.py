@@ -1,13 +1,11 @@
-#from yat.model import *
+from yat.model import *
 
 class PrettyPrinter():
 	def __init__(self):
 		self.tab = 0;	
 
-	def print_tab(self, expr):
+	def print_tab(self):
 		print('    '*self.tab, end='')
-		print(expr);
-
 
 	def visit(self, expr):
 		expr.visit(self)
@@ -23,7 +21,7 @@ class PrettyPrinter():
 	def visitUnaryOperation(self, unary):
 		print('(' + unary.op, end='')
 		unary.expr.visit(self)
-		print(')')
+		print(')', end='')
 
 	def visitNumber(self, number):
 		print(number.value, end='')
@@ -42,11 +40,11 @@ class PrettyPrinter():
 		print('def ' + definition.name + '(' + ', '.join(definition.function.args) + '){')
 		self.tab += 1;
 		for expr in definition.function.body:
-			print('    '*self.tab, end='')
+			self.print_tab()
 			expr.visit(self)
 			print(';')
 		self.tab -= 1;
-		print('    '*self.tab, end='')
+		self.print_tab()
 		print('}', end='')	
 
 	def visitFunctionCall(self, call):
@@ -67,18 +65,18 @@ class PrettyPrinter():
 		if cond.if_true:
 			self.tab += 1;
 			for expr in cond.if_true:
-				print('    '*self.tab, end='')   
+				self.print_tab()   
 				expr.visit(self)
 				print(';')
 			self.tab -= 1;
-		print('    '*self.tab, end='')
+		self.print_tab()
 		print('} else {')
 		if cond.if_false:
 			self.tab += 1;
 			for expr in cond.if_false:
-				print('    '*self.tab, end='')
+				self.print_tab()
 				expr.visit(self)
 				print(';')
 			self.tab -= 1;
-		print('    '*self.tab, end='')
+		self.print_tab()
 		print('}', end='')

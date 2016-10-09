@@ -1,5 +1,5 @@
 import sys
-#from printer import PrettyPrinter
+#from printer import *
 #from folder import *                                       
 	
 class Scope(object):
@@ -18,7 +18,6 @@ class Scope(object):
 class Number:
 	def __init__(self, value):
 		self.value = value
-		self.Type = 'Number'	
 	def evaluate(self, scope):
 		return self
 	def __bool__(self):
@@ -29,7 +28,6 @@ class Number:
 class BinaryOperation:
 	def __init__(self, ihs, op, rhs):
 		self.ihs = ihs
-		self.Type = 'Binary'
 		self.rhs = rhs
 		self.op = op
 		self.operation_dictionary = {'+': lambda x, y: x.value + y.value, '-': lambda x, y: x.value - y.value,
@@ -49,7 +47,6 @@ class BinaryOperation:
 class UnaryOperation:
 	def __init__(self, op, expr):
 		self.expr = expr
-		self.Type = 'Unary'
 		self.op = op
 		self.operation_dictionary = {'-': lambda x: -x.value, '!': lambda x: int(not(bool(x.value)))}
 	def evaluate(self, scope):
@@ -61,7 +58,6 @@ class UnaryOperation:
 class Function:
 	def __init__(self, args, body):
 		self.args = args
-		self.Type = 'Fucntion'
 		self.body = body
 	def evaluate(self, scope):
 		result = Number(0)
@@ -72,7 +68,6 @@ class Function:
 class FunctionCall:
 	def __init__(self, fun_expr, args):
 		self.args = args
-		self.Type = 'FunctionCall'
 		self.fun_expr = fun_expr
 	def evaluate(self, scope):
 		function = self.fun_expr.evaluate(scope)
@@ -87,7 +82,6 @@ class Conditional:
 	def __init__(self, condition, if_true = None, if_false = None):
 		self.condition = condition
 		self.if_true = if_true
-		self.Type = 'conditional'
 		self.if_false = if_false
 	def evaluate(self, scope):
 		condition = self.condition.evaluate(scope)
@@ -106,7 +100,6 @@ class Conditional:
 class Reference:
 	def __init__(self, name):
 		self.name = name
-		self.Type = 'Reference'
 	def evaluate(self, scope):
 		return scope[self.name]	
 	def visit(self, visitor):
@@ -115,7 +108,6 @@ class Reference:
 class FunctionDefinition:
 	def __init__(self, name, function):
 		self.name = name
-		self.Type = 'FunctionDefinition'
 		self.function = function
 	def evaluate(self, scope):
 		scope[self.name] = self.function
@@ -126,7 +118,6 @@ class FunctionDefinition:
 class Read:
 	def __init__(self, name):
 		self.name = name
-		self.Type = 'Read'
 	def evaluate(self, scope):
 		value = Number(int(input()))
 		scope[self.name] = value
@@ -137,7 +128,6 @@ class Read:
 class Print:
 	def __init__(self, expr):
 		self.expr = expr
-		self.Type = 'Print'
 	def evaluate(self, scope):
 		result = self.expr.evaluate(scope)
 		print(result.value)
@@ -273,16 +263,18 @@ def _model_main_tests():         #May I call it like this?
 
 		   	
 if __name__ == '__main__':
-	_model_main_tests()
-#	n1 = Number(0)
-#	n2 = Number(2)
-#	r1 = Read('a')
-#	r2 = Read('b')
-#	b1 = BinaryOperation(Reference('a') , '+', Reference('a'))
-#	b2 = BinaryOperation(b1, '+', r2)
-#	folder = ConstantFolder()
-#	newb = folder.visit(b2)
-#	printer = PrettyPrinter()
-#	printer.visit(newb)
+#	_model_main_tests()
+	n1 = Number(0)
+	n2 = Number(2)
+	r2 = Read('b')
+	b1 = BinaryOperation(Reference('a') , '+', Reference('a'))
+	b2 = BinaryOperation(b1, '+', r2)
+	folder = ConstantFolder()
+	newb = folder.visit(b2)
+	printer = PrettyPrinter()
+	printer.visit(newb)
+#	print(isinstance(n1, Number))
 
-       
+
+
+      
