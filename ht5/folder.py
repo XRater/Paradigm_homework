@@ -32,7 +32,7 @@ class ConstantFolder:
 		un_expr = unary.expr.visit(self)
 		if isinstance(un_expr, Number):
 			return(UnaryOperation(unary.op, un_expr).evaluate(None))
-		return UnaryOperation(unary.op, un_expr);
+		return UnaryOperation(unary.op, un_expr)
 
 	def visitConditional(self, cond):
 		new_cond = cond.condition.visit(self)
