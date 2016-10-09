@@ -1,4 +1,5 @@
-from model import *
+import yat.model
+#from model import *
 
 class ConstantFolder:             
 

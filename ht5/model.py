@@ -1,6 +1,8 @@
 import sys
-from printer import PrettyPrinter
-from folder import *                                       
+import yat.printer
+import yat.floder
+#from printer import PrettyPrinter
+#from folder import *                                       
 	
 class Scope(object):
 	def __init__(self, parent = None):
