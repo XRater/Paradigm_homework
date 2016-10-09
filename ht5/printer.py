@@ -38,12 +38,12 @@ class PrettyPrinter():
 
 	def visitFunctionDefinition(self, definition):
 		print('def ' + definition.name + '(' + ', '.join(definition.function.args) + '){')
-		self.tab += 1;
+		self.tab += 1
 		for expr in definition.function.body:
 			self.print_tab()
 			expr.visit(self)
 			print(';')
-		self.tab -= 1;
+		self.tab -= 1
 		self.print_tab()
 		print('}', end='')	
 
@@ -63,20 +63,20 @@ class PrettyPrinter():
 		cond.condition.visit(self)
 		print(') {')
 		if cond.if_true:
-			self.tab += 1;
+			self.tab += 1
 			for expr in cond.if_true:
 				self.print_tab()   
 				expr.visit(self)
 				print(';')
-			self.tab -= 1;
+			self.tab -= 1
 		self.print_tab()
 		print('} else {')
 		if cond.if_false:
-			self.tab += 1;
+			self.tab += 1
 			for expr in cond.if_false:
 				self.print_tab()
 				expr.visit(self)
 				print(';')
-			self.tab -= 1;
+			self.tab -= 1
 		self.print_tab()
 		print('}', end='')
