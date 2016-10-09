@@ -44,6 +44,7 @@ class PrettyPrinter():
 			expr.visit(self)
 			print(';')
 		self.tab -= 1;
+		print('    '*self.tab, end='')
 		print('}', end='')	
 
 	def visitFunctionCall(self, call):
