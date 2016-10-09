@@ -20,8 +20,6 @@ class Number:
 		self.value = value
 	def evaluate(self, scope):
 		return self
-	def __bool__(self):
-		return bool(self.value)
 	def visit(self, visitor):
 		return visitor.visitNumber(self)
 
@@ -87,9 +85,9 @@ class Conditional:
 		condition = self.condition.evaluate(scope)
 		result = Number(0)
 		body = []
-		if condition and self.if_true:
+		if (condition.value) and (self.if_true):
 			body = self.if_true
-		elif not(condition) and self.if_false:
+		elif (condition.value == 0) and (self.if_false):
 			body = self.if_false
 		for expr in body:
 			result = expr.evaluate(scope)
@@ -263,16 +261,16 @@ def _model_main_tests():         #May I call it like this?
 
 		   	
 if __name__ == '__main__':
-#	_model_main_tests()
-	n1 = Number(0)
-	n2 = Number(2)
-	r2 = Read('b')
-	b1 = BinaryOperation(Reference('a') , '+', Reference('a'))
-	b2 = BinaryOperation(b1, '+', r2)
-	folder = ConstantFolder()
-	newb = folder.visit(b2)
-	printer = PrettyPrinter()
-	printer.visit(newb)
+	_model_main_tests()
+#	n1 = Number(0)
+#	n2 = Number(2)
+#	r2 = Read('b')
+#	b1 = BinaryOperation(Reference('a') , '+', Reference('a'))
+#	b2 = BinaryOperation(b1, '+', r2)
+#	folder = ConstantFolder()
+#	newb = folder.visit(b2)
+#	printer = PrettyPrinter()
+#	printer.visit(newb)
 #	print(isinstance(n1, Number))
 
 

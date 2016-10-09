@@ -1,14 +1,14 @@
 from yat.model import *
 from yat.printer import *
 
-class ConstantFolder:             
 
+class ConstantFolder:
 	def visit(self, tree):
-		return tree.visit(self)             
+		return tree.visit(self)
 
-	def visitNumber(self, number):            
-		return number                         	
-	
+	def visitNumber(self, number):
+		return number
+
 	def visit_list(self, args):
 		return list(map(lambda expr: expr.visit(self), args))
 
@@ -26,22 +26,22 @@ class ConstantFolder:
 		if (isinstance(left_part, Reference)) and (isinstance(right_part, Reference)) and (binary.op == '-'):
 			if right_part.name == left_part.name:
 				return Number(0)
-		return BinaryOperation(left_part, binary.op, right_part);
-	
+		return BinaryOperation(left_part, binary.op, right_part)
+
 	def visitUnaryOperation(self, unary):
 		un_expr = unary.expr.visit(self)
 		if isinstance(un_expr, Number):
-			return(UnaryOperation(unary.op, un_expr).evaluate(None))
+			return UnaryOperation(unary.op, un_expr).evaluate(None)
 		return UnaryOperation(unary.op, un_expr)
 
 	def visitConditional(self, cond):
 		new_cond = cond.condition.visit(self)
 		new_if_true = []
 		new_if_false = []
-		if cond.if_true:                      
-		    new_if_true = self.visit_list(cond.if_true)
+		if cond.if_true:
+			new_if_true = self.visit_list(cond.if_true)
 		if cond.if_false:
-		    new_if_false = self.visit_list(cond.if_false)
+			new_if_false = self.visit_list(cond.if_false)
 		return Conditional(new_cond, new_if_true, new_if_false)
 
 	def visitFunctionCall(self, funcall):
@@ -62,9 +62,9 @@ class ConstantFolder:
 		return read
 
 	def visitReference(self, ref):
-		return ref      
+		return ref
 
-if __name__ == '__main__':   
+if __name__ == '__main__':
 	print('Greatest common division')
 	scope = Scope()
 	ra = Read('a')
@@ -75,8 +75,8 @@ if __name__ == '__main__':
 	utest = UnaryOperation('!', Number(124))
 	Eq_a0 = BinaryOperation(Reference('a'), '==', btest)
 	ca = Conditional(Eq_a0, [Print(Reference('b'))], [FunctionCall(Reference('GCD'), [Reference('a'), evl_bma])])
-	c = Conditional(Cmp_ab,[ca],[FunctionCall(Reference('swap_gcd'), [Reference('a'), Reference('b')])])
-	swap_gcd = Function(['a', 'b'], [FunctionCall(Reference('GCD'),[Reference('b'), Reference('a')])])
+	c = Conditional(Cmp_ab, [ca], [FunctionCall(Reference('swap_gcd'), [Reference('a'), Reference('b')])])
+	swap_gcd = Function(['a', 'b'], [FunctionCall(Reference('GCD'), [Reference('b'), Reference('a')])])
 	GCD = Function(['a', 'b'], [c])
 	GCD_def = FunctionDefinition('GCD', GCD)
 	swap_gcd_def = FunctionDefinition('swap_gcd', swap_gcd)
