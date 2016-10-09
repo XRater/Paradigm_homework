@@ -67,18 +67,3 @@ class ConstantFolder:
 	def visitReference(self, ref):
 		return ref      
 
- '''
-if __name__ == '__main__':
-#	_model_main_tests()
-	n1 = Number(0)
-	n2 = Number(2)
-	r1 = Read('a')
-	r2 = Read('b')
-	b1 = BinaryOperation(n1 , '-', n2)
-	b2 = BinaryOperation(b1, '+', r2)
-	u1 = UnaryOperation('-', n2)
-	folder = ConstantFolder()
-	newb = folder.visit(u1)
-	printer = PrettyPrinter()
-	printer.visit(newb)            '''
-
