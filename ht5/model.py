@@ -95,7 +95,7 @@ class Conditional:
 		body = []
 		if condition and self.if_true:
 			body = self.if_true
-		elif self.if_false:
+		elif not(condition) and self.if_false:
 			body = self.if_false
 		for expr in body:
 			result = expr.evaluate(scope)
@@ -192,7 +192,7 @@ def Test2(mode):
 		printer = PrettyPrinter()
 		printer.visit(p)
 
-def Test3():
+def Test3(mode):
 	print('Maximum of two integers')
 	scope = Scope()                                                                                                  #Maximum of 2
 	r1 = Read('a')
