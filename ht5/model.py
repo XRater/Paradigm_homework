@@ -1,6 +1,6 @@
 import sys
 #from printer import PrettyPrinter
-#from folder import *                                       
+#rom folder import *                                       
 	
 class Scope(object):
 	def __init__(self, parent = None):
@@ -273,16 +273,16 @@ def _model_main_tests():         #May I call it like this?
 
 		   	
 if __name__ == '__main__':
-#	_model_main_tests()
-	n1 = Number(0)
-	n2 = Number(2)
-	r1 = Read('a')
-	r2 = Read('b')
-	b1 = BinaryOperation(Reference('a') , '+', Reference('a'))
-	b2 = BinaryOperation(b1, '+', r2)
-	folder = ConstantFolder()
-	newb = folder.visit(b2)
-	printer = PrettyPrinter()
-	printer.visit(newb)
+	_model_main_tests()
+#	n1 = Number(0)
+#	n2 = Number(2)
+#	r1 = Read('a')
+#	r2 = Read('b')
+#	b1 = BinaryOperation(Reference('a') , '+', Reference('a'))
+#	b2 = BinaryOperation(b1, '+', r2)
+#	folder = ConstantFolder()
+#	newb = folder.visit(b2)
+#	printer = PrettyPrinter()
+#	printer.visit(newb)
 
        
