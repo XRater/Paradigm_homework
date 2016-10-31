@@ -30,18 +30,6 @@ void free_threadpool(threadpool_t* pool){
 void thpool_submit(threadpool_t* pool, task_t* task){
     queue_push(&pool->tasks, *task);
 }
-
-/*
-void work(threadpool_t* pool){
-    
-}
-*/
-
-void thsort(threadpool_t* pool){
-    while (pool->thread_number){
-        queue_run(&pool->tasks);    
-    }
-}
     
 void print(void* data){
     taskargs_t* args;
