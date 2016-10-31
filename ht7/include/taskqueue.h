@@ -5,7 +5,6 @@
 typedef struct Task{
     void (*func)();
     void* args;
-    int number;
 } task_t;    
 
 typedef struct QNode{
@@ -24,8 +23,12 @@ void init_queue(queue_t* queue);
 void queue_push_node(queue_t* queue, qnode_t* node);
 void queue_push(queue_t* queue, task_t task);
 task_t queue_pop(queue_t* queue);
-void task_run(task_t task);
+void task_run(task_t* task);
+void free_run(task_t* task);
 void queue_run(queue_t* queue);
 void free_queue(queue_t* queue);
+void init_task(task_t* task, void (*func)(), void* data);
+void free_task(task_t* task);
+
 
 #endif 
