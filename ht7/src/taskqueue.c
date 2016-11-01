@@ -63,6 +63,7 @@ void free_queue(queue_t* queue){
     qnode_t* node = queue->head.next;
     while (&queue->head != node){
         node = node->next;
+        free_task(&node->prev->task);
         free(node->prev);
     }
 }

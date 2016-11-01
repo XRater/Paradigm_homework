@@ -3,9 +3,9 @@ LDFLAGS ?= -lpthread
 
 all: bin pqsort	
 pqsort: bin/taskqueue.o bin/pqsort.o
-	gcc bin/pqsort.o bin/taskqueue.o -o pqsort
-bin/pqsort.o: src/pqsort.c include/taskqueue.h
-	gcc -c src/pqsort.c -o bin/pqsort.o
+	gcc bin/pqsort.o bin/taskqueue.o -o pqsort -lpthread
+bin/pqsort.o: src/pqsort.c include/taskqueue.h include/pqsort.h
+	gcc -c src/pqsort.c -o bin/pqsort.o -lpthread
 bin/taskqueue.o: src/taskqueue.c include/taskqueue.h
 	gcc -c src/taskqueue.c -o bin/taskqueue.o
 
