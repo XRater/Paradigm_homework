@@ -17,3 +17,4 @@ bin:
 	mkdir -p bin
 clean:
 	rm -r -f bin
+	rm pqsort
