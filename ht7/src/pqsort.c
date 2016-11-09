@@ -23,22 +23,23 @@ void free_threadpool(threadpool_t* pool){
 
 void thpool_submit(threadpool_t* pool, task_t* task){
     queue_push(&pool->tasks, *task);
+	pthread_cond_signal(&pool->cond);
 }
     
 void sort_part(void* data){
-    taskargs_t* args;
-    args = (taskargs_t*) data;
+    taskargs_t* args = (taskargs_t*) data;
     size_t size;
     size = args->end - args->begin;
     if (size <= 1){
         pthread_mutex_lock(&args->pool->mutex);
         progress -= 1;
+        if (progress == 0)
+        	pthread_cond_broadcast(&args->pool->cond);
         pthread_mutex_unlock(&args->pool->mutex);
     }
     else{
         task_t new_task;
-        int x;
-        x = rand()%size;
+        int x = rand()%size;
         int* ind = partition(args->begin, args->end - 1, *(args->begin + x));
         pthread_mutex_lock(&args->pool->mutex);
         add_task(&new_task, args->pool, args->begin, ind + 1);
@@ -61,12 +62,14 @@ int* partition(int* l, int* r, int x){
 }
 
 void add_task(task_t* task, threadpool_t* pool, int* begin, int* end){
-        taskargs_t* args = malloc(sizeof(taskargs_t));
-        args->pool = pool;
-        args->begin = begin;
-        args->end = end;
-        init_task(task, sort_part, args);
-        thpool_submit(pool, task);    
+        if (end - begin > 0){
+            taskargs_t* args = malloc(sizeof(taskargs_t));
+            args->pool = pool;
+            args->begin = begin;
+            args->end = end;
+            init_task(task, sort_part, args);
+            thpool_submit(pool, task);
+        }    
 }
 
 void wait_task(threadpool_t* pool){
@@ -114,17 +117,17 @@ void sort(threadpool_t* pool){
 
 int main()
 {
-    srand(time(NULL));
-    int n = 10;
-    progress = n;
+    int n = 5000000;
     int* array = malloc(sizeof(int)*n);    
 	int i;
 	threadpool_t pool;
     task_t task;
+    taskargs_t* args = malloc(sizeof(taskargs_t));
+    srand(time(NULL));
+    progress = n;
 	for (i = 0; i < n; i++)
 	    array[i] = rand()%15;
-	thpool_init(&pool, 5);
-    taskargs_t* args = malloc(sizeof(taskargs_t));
+	thpool_init(&pool, 1);
     args->pool = &pool;
     args->begin = array;
     args->end = array + n;
@@ -133,8 +136,8 @@ int main()
     sort(&pool);
     thpool_finit(&pool);
     free_threadpool(&pool);
-	for (i = 0; i < n; i++)
-	    printf("%d ", array[i]);
+//	for (i = 0; i < n; i++)
+//	    printf("%d ", array[i]);
 	free(array);
 	return 0;
 }

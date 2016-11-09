@@ -29,9 +29,10 @@ void queue_push(queue_t* queue, task_t task){
 
 task_t queue_pop(queue_t* queue){
     qnode_t* node = queue->head.next;
+    task_t task;
     queue->head.next->next->prev = &queue->head;
     queue->head.next = queue->head.next->next;
-    task_t task = node->task;
+    task = node->task;
     queue->size--;
     free(node);
     return task;
