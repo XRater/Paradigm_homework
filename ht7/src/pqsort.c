@@ -29,11 +29,12 @@ void thpool_submit(threadpool_t* pool, task_t* task){
 void sort_part(void* data){
     taskargs_t* args = (taskargs_t*) data;
     size_t size;
-    size = args->end - args->begin;
+    size = args->end - args->begin + 1;
     if (size <= 1){
         pthread_mutex_lock(&args->pool->mutex);
         progress -= 1;
         if (progress == 0)
+<<<<<<< HEAD
         	pthread_cond_broadcast(&args->pool->cond);
         pthread_mutex_unlock(&args->pool->mutex);
     }
@@ -44,6 +45,20 @@ void sort_part(void* data){
         pthread_mutex_lock(&args->pool->mutex);
         add_task(&new_task, args->pool, args->begin, ind + 1);
         add_task(&new_task, args->pool, ind + 1, args->end);
+=======
+            pthread_cond_broadcast(&args->pool->cond);
+        pthread_mutex_unlock(&args->pool->mutex);
+    }
+    else{
+        task_t task_first, task_second;
+        int x;
+        int* i, j;
+        x = rand()%size;
+        int* ind = partition(args->begin, args->end, *(args->begin + x));
+        pthread_mutex_lock(&args->pool->mutex);
+        add_task(&task_first, args->pool, args->begin, ind);
+        add_task(&task_second, args->pool, ind + 1, args->end);
+>>>>>>> 5e7301e8161fbbea1798a0d62058169cff9ab049
         pthread_mutex_unlock(&args->pool->mutex);
     }
 }
@@ -62,6 +77,7 @@ int* partition(int* l, int* r, int x){
 }
 
 void add_task(task_t* task, threadpool_t* pool, int* begin, int* end){
+<<<<<<< HEAD
         if (end - begin > 0){
             taskargs_t* args = malloc(sizeof(taskargs_t));
             args->pool = pool;
@@ -70,6 +86,15 @@ void add_task(task_t* task, threadpool_t* pool, int* begin, int* end){
             init_task(task, sort_part, args);
             thpool_submit(pool, task);
         }    
+=======
+        taskargs_t* args = malloc(sizeof(taskargs_t));
+        args->pool = pool;
+        args->begin = begin;
+        args->end = end;
+        init_task(task, sort_part, args);
+        thpool_submit(pool, task);    
+//        pthread_cond_signal(&pool->cond);
+>>>>>>> 5e7301e8161fbbea1798a0d62058169cff9ab049
 }
 
 void wait_task(threadpool_t* pool){
@@ -77,7 +102,7 @@ void wait_task(threadpool_t* pool){
 		pthread_cond_wait(&pool->cond, &pool->mutex);
 }
 
-void* go(void* arg){
+void* worker(void* arg){
     threadpool_t* pool = (threadpool_t*) arg;
     while (1){
         int rc = 0;
@@ -97,6 +122,7 @@ void* go(void* arg){
             task_run(&task);
             free_task(&task);
         }
+        //pthread_mutex_unlock(&pool->mutex);
     }
     return NULL;
 }
@@ -112,7 +138,11 @@ void thpool_finit(threadpool_t* pool){
 void sort(threadpool_t* pool){
     size_t i;
     for (i = 0; i < pool->thread_number; i++)
+<<<<<<< HEAD
         pthread_create(pool->threads + i, NULL, go, pool);     
+=======
+        pthread_create(pool->threads + i, NULL, worker, pool);     
+>>>>>>> 5e7301e8161fbbea1798a0d62058169cff9ab049
 }
 
 int main()
@@ -121,7 +151,14 @@ int main()
     int* array = malloc(sizeof(int)*n);    
 	int i;
 	threadpool_t pool;
+<<<<<<< HEAD
     task_t task;
+=======
+    task_t task1, task2;
+	for (i = 0; i < n; i++)
+	    array[i] = rand()%10;
+	thpool_init(&pool, 4);
+>>>>>>> 5e7301e8161fbbea1798a0d62058169cff9ab049
     taskargs_t* args = malloc(sizeof(taskargs_t));
     srand(time(NULL));
     progress = n;
@@ -130,9 +167,15 @@ int main()
 	thpool_init(&pool, 1);
     args->pool = &pool;
     args->begin = array;
+<<<<<<< HEAD
     args->end = array + n;
     init_task(&task, sort_part, args);
     thpool_submit(&pool, &task);
+=======
+    args->end = array + n - 1;
+    init_task(&task1, sort_part, args);
+    thpool_submit(&pool, &task1);
+>>>>>>> 5e7301e8161fbbea1798a0d62058169cff9ab049
     sort(&pool);
     thpool_finit(&pool);
     free_threadpool(&pool);
