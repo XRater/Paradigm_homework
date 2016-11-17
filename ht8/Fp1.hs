@@ -20,16 +20,14 @@ drop' a (x : xs) = drop' (a - 1) xs
 
 filter' :: (a -> Bool) -> [a] -> [a]
 filter' f [] = []
-filter' f (x : xs) | f x == True  = x : filter' f xs
-filter' f (x : xs) | f x == False = filter' f xs
-
+filter' f (x : xs) = if f x then x : filter' f xs else filter' f xs
+                 
 foldl' :: (a -> b -> a) -> a -> [b] -> a
 foldl' f a [] = a
 foldl' f a (x : xs) = foldl' f (f a x) xs
 
 concat' :: [a] -> [a] -> [a]
-concat' [] [] = []
-concat' [] (x : xs) = x : concat' [] xs 
+concat' [] x = x 
 concat' (x : xs) y = x : concat' xs y 
 
 quickSort' :: Ord a =>[a] -> [a]
