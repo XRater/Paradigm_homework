@@ -15,13 +15,15 @@ typedef struct TaskArgs{
     threadpool_t* pool;
     int* begin;
     int* end;
+    int depth;
 } taskargs_t;
 
+int comp(const void* a, const void* b);
 void thpool_init(threadpool_t* pool, size_t thread_number);
 void free_threadpool(threadpool_t* pool);
 void thpool_submit(threadpool_t* pool, task_t* task);
 void sort_part(void* data);
-void add_task(task_t* task, threadpool_t* pool, int* begin, int* end);
+void add_task(task_t* task, threadpool_t* pool, int* begin, int* end, int depth);
 void* go(void* arg);
 void* worker(void* args);
 void sort(threadpool_t* pool);
