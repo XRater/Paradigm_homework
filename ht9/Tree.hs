@@ -1,6 +1,6 @@
 import Prelude hiding (lookup)
 
-data BinaryTree k v = Nil | Cons (BinaryTree k v) (k, v) (BinaryTree k v) deriving (Show, Eq)
+data BinaryTree k v = Nil | Cons (BinaryTree k v) (k, v) (BinaryTree k v) deriving Show
 
 treeToList :: BinaryTree k v -> [v]
 treeToList Nil = []
