@@ -25,9 +25,11 @@ insert k v (Cons x p y) | k == fst p = Cons x (k, v) y
 
 delete :: Ord k => k -> BinaryTree k v -> BinaryTree k v
 delete k Nil = Nil
-delete k (Cons x p y) | k < fst p  = delete k x
-                      | k > fst p  = delete k y
+delete k (Cons x p y) | k < fst p  = Cons (delete k x) p y
+                      | k > fst p  = Cons x p (delete k y)
                       | k == fst p = mergeSorted x y 
     where
         mergeSorted Nil x = x
         mergeSorted (Cons x p y) r = Cons (mergeSorted x y) p r
+        
+
