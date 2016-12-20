@@ -119,7 +119,11 @@ class TestBinary:
                     if (r == 0 and (op == '/' or op == '%')):
                         continue
                     res = BinaryOperation(Number(l), op, Number(r)).evaluate(None)
-                    check_number(res, self.op_dict[op](l, r))
+                    if op == '+' or op != '-' or op == '*' or op == '/' or op == '%':
+                        check_number(res, self.op_dict[op](l, r))
+                    else :
+                        isinstance(res, Number)
+                        assert bool(get_value(res)) == bool(self.op_dict[op](l, r))
 
     def test_binary_comp(self):
         left = BinaryOperation(Number(4), '*', Number(5))
