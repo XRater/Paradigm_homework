@@ -1,4 +1,4 @@
-from model import *
+from model1 import *
 #import pytest
 import sys
 from io import StringIO
@@ -119,7 +119,7 @@ class TestBinary:
                     if (r == 0 and (op == '/' or op == '%')):
                         continue
                     res = BinaryOperation(Number(l), op, Number(r)).evaluate(None)
-                    if op == '+' or op != '-' or op == '*' or op == '/' or op == '%':
+                    if op == '+' or op == '-' or op == '*' or op == '/' or op == '%':
                         check_number(res, self.op_dict[op](l, r))
                     else :
                         isinstance(res, Number)
