@@ -1,4 +1,4 @@
-from model1 import *
+from model import *
 #import pytest
 import sys
 from io import StringIO
