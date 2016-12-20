@@ -147,40 +147,124 @@ class TestFunction:
 
     def test_function_no_args(self):   
         body = [BinaryOperation(Number(5), '+', Number(5))]
-        foo = Function([], body)
-        res = foo.evaluate(None)
+        foo1 = Function([], body)
+        res = foo1.evaluate(None)
         check_number(res, 10)
     
     def test_funcvtion_empty(self):
-        foo = Function([], [])
-        res = foo.evaluate(None)
+        foo1 = Function([], [])
+        res = foo1.evaluate(None)
         
     def test_function_empty_with_args(self):
         scope = Scope()
         make_scope(scope, {'a' : Number(1), 'b' : Number(2)})
-        foo = Function(['a', 'b'], [])
-        res = foo.evaluate(scope)    
+        foo1 = Function(['a', 'b'], [])
+        res = foo1.evaluate(scope)    
     
     def test_function(self):
-        old = sys.stdout
-        sys.stdout = StringIO()
+        old = sys.stdin
+        sys.stdin = StringIO(str(-3))
         scope = Scope()
        
         make_scope(scope, {'a' : Number(-5), 'b' : Number(1)})
-        body = [Print(Number(1)), BinaryOperation(Reference('a'), '+', Reference('b'))]
-        foo = Function(['a', 'b'], body)
+        body = [Read('a'), BinaryOperation(Reference('a'), '+', Reference('b'))]
+        foo1 = Function(['a', 'b'], body)
        
-        assert sys.stdout.getvalue() == (str(-5) + '\n')
-        sys.stdout = StringIO()
-        res = foo.evaluate(scope)
-        check_number(res, -4)
+        res = foo1.evaluate(scope)
+        sys.stdin = old
+        check_number(res, -2)
     
 class TestFunctionDefinition:
 
     def test_definition(self):
-        pass
-     
+        scope = Scope()
+        make_scope(scope, {'a' : Number(5)})
+        foo1 = Function([], [])
+        res = FunctionDefinition('foo', foo1).evaluate(scope)
+        assert isinstance(res, Function)
+        check_scope(scope, {'a' : 5, 'foo' : foo1})
         
-#TestBinary().test_binary_evaluate()    
-#TestFunction().test_function()    
-    
+
+class TestFunctionCall:
+
+    def test_call(self):
+        scope = Scope()
+        make_scope(scope, {'a' : Number(1), 'b' : Number(2)})
+        body = [BinaryOperation(Reference('a'), '+', Reference('b'))]
+       
+        foo1 = Function(['a', 'c'], body)
+        deffoo1 = FunctionDefinition('func1', foo1)
+        deffoo1.evaluate(scope)
+        
+        res1 = FunctionCall(Reference('func1'), [UnaryOperation('-', Number(1000)), Number(6)]).evaluate(scope)
+        check_number(res1, -998)
+        check_scope(scope, {'a' : 1, 'b' : 2, 'func1' : 0, 'c' : None})
+
+        foo2 = Function(['a', 'b'], body)
+        deffoo2 = FunctionDefinition('func2', foo2)
+        deffoo2.evaluate(scope)
+
+        res2 = FunctionCall(Reference('func2'), [UnaryOperation('-', Number(1000)), Number(6)]).evaluate(scope)
+        check_number(res2, -994)
+        check_scope(scope, {'a' : 1, 'b' : 2, 'func2' : 0, 'c' : None})
+
+
+class TestConditional:
+
+    def test_cond_allempty(self):
+        Conditional(Number(0), [], []).evaluate(None)
+        Conditional(Number(1), [], []).evaluate(None)    
+        Conditional(Number(0), None, None).evaluate(None)
+        Conditional(Number(1), None, None).evaluate(None)    
+        Conditional(Number(0), None, []).evaluate(None)
+        Conditional(Number(1), None, []).evaluate(None)    
+        Conditional(Number(0), [], None).evaluate(None)
+        Conditional(Number(1), [], None).evaluate(None)    
+
+    def test_cond_false(self):
+        cond = BinaryOperation(Number(1), '*', Number(0))
+        res = Conditional(cond, [Number(6)], [Number(-15)]).evaluate(None)
+        check_number(res, -15)
+
+    def test_cond_true(self):
+        cond = BinaryOperation(Number(1), '+', Number(5))
+        res = Conditional(cond, [Number(6)], [Number(-15)]).evaluate(None)
+        check_number(res, 6)
+
+    def test_cond_true_emptyfalse(self):
+        cond = Number(1)
+        res = Conditional(cond, [Number(6)], []).evaluate(None)
+        check_number(res, 6)
+        res = Conditional(cond, [Number(6)], None).evaluate(None)
+        check_number(res, 6)
+
+    def test_cond_false_emptytrue(self):
+        cond = Number(0)
+        res = Conditional(cond, [], [Number(6)]).evaluate(None)
+        check_number(res, 6)
+        res = Conditional(cond, None, [Number(6)]).evaluate(None)
+        check_number(res, 6)
+
+    def test_cond_comp_false(self):
+        scope = Scope()
+        old = sys.stdin
+        cond = Number(0)
+        sys.stdin = StringIO(str(-5))
+        res = Conditional(cond, [], [Read('a'), Number(3)]).evaluate(scope)
+        check_number(res, 3)
+        check_scope(scope, {'a' : -5})
+        sys.stdin = old
+
+    def test_cond_comp_false(self):
+        scope = Scope()
+        old = sys.stdin
+        cond = Number(1)
+        sys.stdin = StringIO(str(-5))
+        res = Conditional(cond, [Read('a'), Number(3)], []).evaluate(scope)
+        check_number(res, 3)
+        check_scope(scope, {'a' : -5})
+        sys.stdin = old
+                                                                          
+
+
+
