@@ -109,7 +109,7 @@ class TestBinary:
                     '<':  lambda x, y: x < y,  '>=': lambda x, y: x >= y,
                     '<=': lambda x, y: x <= y, '&&': lambda x, y: bool(x) * bool(y),
                     '||': lambda x, y: bool(x) + bool(y)}
-    
+     
     def test_binary_evaluate(self):
         for op in self.op_dict.keys():
             for l in input_values:
@@ -138,8 +138,13 @@ class TestUnary:
         for op in self.op_dict.keys():
             for val in input_values:
                 res = UnaryOperation(op, Number(val)).evaluate(None)
-                check_number(res, self.op_dict[op](val))
-    
+                if op == '-':
+                    check_number(res, self.op_dict[op](val))
+                else:
+                    isinstance(res, Number)
+                    assert bool(get_value(res)) == bool(self.op_dict[op](val))
+
+                                    
     def test_unary_comp(self):
         expr = UnaryOperation('-', Number(5))
         res = UnaryOperation('-', expr).evaluate(None)
