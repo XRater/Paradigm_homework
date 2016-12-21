@@ -22,9 +22,7 @@ def make_scope(scope, d):
 
 def check_scope(scope, d):
     for key, value in d.items():
-        if (scope[key] == None):
-            assert scope[key] == value
-        elif (isinstance(scope[key], Number)):
+        if (isinstance(scope[key], Number)):
             assert get_value(scope[key]) == value
         else:
             assert isinstance(scope[key], Function)
@@ -58,19 +56,19 @@ class TestScope:
     def test_scope(self):
         parent_scope = Scope()            
         make_scope(parent_scope, {"1" : Number(0), "var" : Number(5)})
-        check_scope(parent_scope, {"1" : 0, "var" : 5, "0" : None})
+        check_scope(parent_scope, {"1" : 0, "var" : 5})
 
         scope1 = Scope(parent_scope)
         make_scope(scope1, {"1" : Number(2), "0" : Number(4)})
-        check_scope(scope1, {"1" : 2, "var" : 5, "0" : 4, "3" : None})    
+        check_scope(scope1, {"1" : 2, "var" : 5, "0" : 4})    
 
         scope2 = Scope(parent_scope)
         make_scope(scope2, {"3" : Number(0)})
-        check_scope(scope2, {"1" : 0, "var" : 5, "0" : None, "3" : 0, "7" : None})
+        check_scope(scope2, {"1" : 0, "var" : 5, "3" : 0})
 
         child_scope = Scope(scope1)
         make_scope(scope1, {"1" : Number(-11), "3" : Number(7), "12" : Number(10)})
-        check_scope(scope1, {"1" : -11, "var" : 5, "3" : 7, "0" : 4, "12" : 10, "7" : None})   
+        check_scope(scope1, {"1" : -11, "var" : 5, "3" : 7, "0" : 4, "12" : 10})   
             
 
 class TestRead:
@@ -202,7 +200,7 @@ class TestFunctionCall:
         
         res1 = FunctionCall(Reference('func1'), [UnaryOperation('-', Number(1000)), Number(6)]).evaluate(scope)
         check_number(res1, -998)
-        check_scope(scope, {'a' : 1, 'b' : 2, 'func1' : 0, 'c' : None})
+        check_scope(scope, {'a' : 1, 'b' : 2, 'func1' : 0})
 
         foo2 = Function(['a', 'b'], body)
         deffoo2 = FunctionDefinition('func2', foo2)
@@ -210,7 +208,7 @@ class TestFunctionCall:
 
         res2 = FunctionCall(Reference('func2'), [UnaryOperation('-', Number(1000)), Number(6)]).evaluate(scope)
         check_number(res2, -994)
-        check_scope(scope, {'a' : 1, 'b' : 2, 'func2' : 0, 'c' : None})
+        check_scope(scope, {'a' : 1, 'b' : 2, 'func2' : 0})
 
 
 class TestConditional:
